@@ -1,32 +1,63 @@
 # AI Representations with NVIDIA (hk25-NVIDIA)
 
-NVIDIA has been exploring the use of AI to improve the workflows associated with km-scale models.  For the Hackathon they have developed a prototype emulator allows massive compression of km-scale data, which then can provide a platofrm for accelerated analysis.
+NVIDIA has been exploring the use of AI to improve the workflows associated with km-scale models.  For the Hackathon they have developed a prototype emulator allows massive compression of km-scale data, which then can provide a platform for accelerated analysis.
 
 In this cross-cutting activity we will evaluate the capabilities and limitations of the emulator, and its ability to learn differences among km-scale models. 
 
-**Note** Participants are asked to register for the team as early as possible so the varied skill levels can be evaluated and appropriate activities defined.
 
-**Coordination**: Karthik Kashinath (kkashinath@nvidia.com), Noah Brenowitz (nbrenowitz@nvidia.com)
+- Arxiv:  (ETA 5/12 PM)
+
+## Discussing on 
+
+- [mattermost](https://mattermost.mpimet.mpg.de/wcrp-lighthouse/channels/hk25-nvidia) (preferred)
+- Email: Karthik Kashinath (kkashinath@nvidia.com), Noah Brenowitz (nbrenowitz@nvidia.com)
+
+## The Code
+
+- https://github.com/NVlabs/cBottle - diffusion model code for this project
+- https://github.com/Nvlabs/earth2grid - HEALPix GPU utilities
+
+## Tutorials
+
+- part 1: Noah, earth2grid+healpix: https://nvlabs.github.io/earth2grid/tutorials/healpix.html  (20 minutes)
+- part 2: Tao, inference + dataloaders + cbottle training: https://nvlabs.github.io/cBottle/tutorials/  (40 minutes)
 
 ## Sketch of initial activities:
 
-* 45-minute technical talk on generative diffusion model-based emulation of km-scale climate data (day 1)
-* 60-minute hands-on tutorial session on training and inferencing diffusion models (day 1)
+* 45-minute technical talk on generative diffusion model-based emulation of km-scale climate data (day 2, 9am PT)
+* 60-minute hands-on tutorial session on training and inferencing diffusion models (day 2, PM PT)
 * AI inference of model trained on an earlier version of ICON and ERA5 to study limits of climate faithfulness + visualization
 * Extend AI training to additional models hosted on NERSC mode
 * Scale out the AI training to other hackathon nodes and models
 
-Some potential science questions to explore with the AI-generated km-scale fields:
-- Is cloud scale organization modulated by synoptics in the right way?
-- Do the Southern ocean "cloud streets" look realistic?
-- Does the diurnal cycle look right over the amazon?
-
-
 ## Potential ideas for hacking
 
-- Inferences for other science questions (e.g., hk25-ConvOrg, hk25-MCS, hk25-ShallowCirc, hk25-StCu)
-- Train on other GSRMs/unified training on multiple datasets
-- Reducing global super-res inference latency on a single GPU from minutes to seconds
+- Training new models on new GSRMs (Tao)
+    - Train coarse model on other GSRMs
+    - Train the monthly mean SST generator on CMIP data on NERSC
+    - Train super res model on the other GSRMs
+        - make super res training multimodal (Akshay, Peter)
+        - training video super res model?
+        - Does cBottle reproduce the inter-GSRM differences (to just super-res module)
+- Inference 
+    - Inference performance optimization (Akshay)
+        - Reducing global super-res inference latency on a single GPU from minutes to seconds
+    - Guided sampling (other user defined inputs)
+    - Better frontends to cBottle. (Aayush, Akshay, Noah)
+        - healpix zarr output
+        - cubed
+        - zarr frontend: virtual zarr store or external http server
+- Analysis (Peter)
+    - Inferences for other science questions (e.g., hk25-ConvOrg, hk25-MCS, hk25-ShallowCirc, hk25-StCu)
+    - HPX1024
+        - Is cloud scale organization modulated by synoptics in the right way?
+        - Do the Southern ocean "cloud streets" look realistic?
+        - Does the diurnal cycle look right over the amazon?
+        - FID for cBottle? Can we use pre-trained image/language models for evaluating quality of climate model output. (Noah)
+    - HPX64
+        - find flaws in the macro scale generator.
+        - fix the ability to represent trends
+
 
 ## Project Description
 
@@ -70,10 +101,5 @@ Tropical cyclone occurrence probability derived from ERA5 (1980–2017) and cBot
 ## Known Limitations
 
 - Non-stationary trends such as how heat waves vary under climate change are not optimally represented in the current version of cBottle, and the model varies too much from the diurnal cycle. We expect these can be addressed by training on more data and further tuning of the noise schedule.
-
 - Lack of temporal coherence. The framework cannot diagnose the duration of events or commonly used metrics like the return time of an event. We are working on extending a next generation version of the macroscale generator that uses video diffusion to the full suite of diagnostics.
 
-## The Code
-
-- https://github.com/NVlabs/cBottle - diffusion model code for this project
-- https://github.com/Nvlabs/earth2grid - HEALPix GPU utilities
